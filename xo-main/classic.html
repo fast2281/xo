@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Классический режим</title>
+    <style>
+        /* CSS стили */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        td {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ccc;
+            font-size: 32px;
+            cursor: pointer;
+        }
+        #result {
+            color: #4CAF50;
+            font-size: 28px;
+            margin-top: 20px;
+        }
+        #backButton, #newGameButton {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #backButton:hover, #newGameButton:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Классический режим</h1>
+        <table>
+            <tr>
+                <td id="0" onclick="updateBoard(0)"></td>
+                <td id="1" onclick="updateBoard(1)"></td>
+                <td id="2" onclick="updateBoard(2)"></td>
+            </tr>
+            <tr>
+                <td id="3" onclick="updateBoard(3)"></td>
+                <td id="4" onclick="updateBoard(4)"></td>
+                <td id="5" onclick="updateBoard(5)"></td>
+            </tr>
+            <tr>
+                <td id="6" onclick="updateBoard(6)"></td>
+                <td id="7" onclick="updateBoard(7)"></td>
+                <td id="8" onclick="updateBoard(8)"></td>
+            </tr>
+        </table>
+        <p id="result"></p>
+        <button id="backButton" onclick="goBack()">Назад</button>
+        <button id="newGameButton" onclick="resetGame()" style="background-color: #4CAF50;">Новая игра</button>
+    </div>
+    <script>
+        // JavaScript код
+        let currentPlayer = 'X';
+        let gameStatus = ['-', '-', '-', '-', '-', '-', '-', '-', '-'];
+
+        function updateBoard(cellId) {
+            if (gameStatus[cellId] === '-' && !checkWinner()) {
+                gameStatus[cellId] = currentPlayer;
+                document.getElementById(cellId).innerText = currentPlayer;
+                
+                if (checkWinner()) {
+                    document.getElementById('result').innerText = `Игрок ${currentPlayer} выиграл!`;
+                } else if (gameStatus.every(cell => cell !== '-')) {
+                    document.getElementById('result').innerText = 'Ничья!';
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+        }
+
+        function checkWinner() {
+            const winConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Горизонтали
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Вертикали
+                [0, 4, 8], [2, 4, 6]             // Диагонали
+            ];
+
+            for (let condition of winConditions) {
+                const [a, b, c] = condition;
+                if (gameStatus[a] !== '-' && gameStatus[a] === gameStatus[b] && gameStatus[a] === gameStatus[c]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function resetGame() {
+            currentPlayer = 'X';
+            gameStatus = ['-', '-', '-', '-', '-', '-', '-', '-', '-'];
+
+            for (let i = 0; i < 9; i++) {
+                document.getElementById(i).innerText = '';
+            }
+
+            document.getElementById('result').innerText = '';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
